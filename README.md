@@ -25,9 +25,9 @@ A 3D raycaster engine built using Python and Pygame. To optimize performance, th
    pip install pygame numpy pybind11 setuptools
    ```
 
-2. Compile the C++ extension module manually via PowerShell (adjust paths to match your system installation if necessary):
+2. Compile the C++ extension module manually via PowerShell (enter your personal install locations):
    ```powershell
-   g++ -O3 -shared -std=c++17 -fPIC -IC:\Users\daan.eeckloo\AppData\Local\Programs\Python\Python311\Include -IC:\Users\daan.eeckloo\Documents\thuis\cocktail_game\cocktail_venv\Lib\site-packages\pybind11\include -LC:\Users\daan.eeckloo\AppData\Local\Programs\Python\Python311\libs raycasting.cpp -o raycasting.pyd -lpython311 -static -lstdc++ -lgcc -lwinpthread
+   g++ -O3 -shared -std=c++17 -fPIC -I[python version include location] -I[pybind include location] -L[python libs location] raycasting.cpp -o raycasting.pyd -lpython311 -static -lstdc++ -lgcc -lwinpthread
    ```
    *This generates `raycasting.pyd` directly inside your project directory, making it ready to be imported into your Python scripts.*
 
