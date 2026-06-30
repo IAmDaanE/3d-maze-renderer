@@ -2,6 +2,8 @@
 
 A 3D raycaster engine built using Python and Pygame. To optimize performance, the intensive mathematical ray-surface collision calculations are offloaded to a native C++ extension module. Communication between Python and C++ is handled via `pybind11`.
 
+<img width="1200" height="897" alt="image" src="https://github.com/user-attachments/assets/5481efb0-94ad-49a3-85c4-982e89b73923" />
+
 ## Features
 
 * **C++ Extension Core:** Raycasting logic and grid coordinate validation run natively in C++ to maintain a stable frame rate.
