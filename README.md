@@ -1,94 +1,66 @@
-# 🚀 Hybrid Pygame + C++ 3D Raycaster Engine
+# Pygame + C++ 3D Raycaster
 
-A high-performance, retro-style 3D Raycaster engine modeled after classic 90s shooters like *Wolfenstein 3D*. This engine solves the typical Python performance bottleneck by offloading complex mathematical ray-surface collisions to a custom native **C++ extension module**, leveraging **pybind11** for seamless, zero-copy data exchange.
+A 3D raycaster engine built using Python and Pygame. To optimize performance, the intensive mathematical ray-surface collision calculations are offloaded to a native C++ extension module. Communication between Python and C++ is handled via `pybind11`.
 
----
+## Features
 
-## ✨ Features
+* **C++ Extension Core:** Raycasting logic and grid coordinate validation run natively in C++ to maintain a stable frame rate.
+* **Direct Memory Binding:** Utilizes `pygame.surfarray` to pass Pygame surface pixel data directly to C++ as 3D arrays without copying memory over the language barrier.
+* **Mouse Look:** Hardware-bound relative mouse tracking using the horizontal mouse delta (`rel_x`) for seamless 360-degree camera rotation.
+* **Dynamic Depth Shading:** Walls are progressively darkened based on the calculated distance to simulate depth fog.
+* **AZERTY Movement Vectors:** Configured out-of-the-box for `Z`, `S`, `Q`, `D` inputs, moving the player dynamically relative to the camera orientation.
 
-* **Blazing Fast C++ Core:** Raycasting math, vector calculations, and map/surface inspections run at native C++ speeds.
-* **Zero-Copy Memory Interop:** Uses `pygame.surfarray` and `pybind11` to expose raw 3D Pygame surface pixel arrays directly to C++ without heavy copying over the language barrier.
-* **Smooth Mouse Look:** Implements hardware-bound relative mouse tracking for effortless 360° camera rotation.
-* **Adaptive Depth Fog:** Visually darkens wall slices dynamically based on the calculated distance from the player to create atmospheric depth.
-* **AZERTY Input Support:** Configured out-of-the-box for seamless vector movement (`Z`, `S`, `Q`, `D`) relative to the camera's orientation.
+## Prerequisites
 
----
+* Python 3.11+
+* Pygame
+* NumPy
+* pybind11
+* A C++ compiler supporting at least C++17 (e.g., GCC/MinGW via MSYS2 or MSVC)
 
-## 🛠️ Architecture & Tech Stack
+## Installation & Compilation
 
-The architecture uses **Inversion of Control (IoC)** to optimize the game loop:
-1. **Python / Pygame:** Handles windows, context creation, user input, texture surfaces, and final frame blitting.
-2. **Pybind11 Bridge:** Directly passes continuous chunks of memory representing surface pixel data down to native code.
-3. **C++ Module:** Receives raw pixel maps, computes vector distances via fast Pythagoras math, manages safety boundaries to prevent crashes, and feeds back a specialized, lightweight array of exact ray distances.
+1. Activate your virtual environment and install the required packages:
+   ```bash
+   pip install pygame numpy pybind11 setuptools
+   ```
 
----
+2. Compile the C++ extension module manually via PowerShell (adjust paths to match your system installation if necessary):
+   ```powershell
+   g++ -O3 -shared -std=c++17 -fPIC -IC:\Users\daan.eeckloo\AppData\Local\Programs\Python\Python311\Include -IC:\Users\daan.eeckloo\Documents\thuis\cocktail_game\cocktail_venv\Lib\site-packages\pybind11\include -LC:\Users\daan.eeckloo\AppData\Local\Programs\Python\Python311\libs raycasting.cpp -o raycasting.pyd -lpython311 -static -lstdc++ -lgcc -lwinpthread
+   ```
+   *This generates `raycasting.pyd` directly inside your project directory, making it ready to be imported into your Python scripts.*
 
-## 🚀 Getting Started
+## Controls
 
-### 📋 Prerequisites
+* **`Z` / `S`** – Move Forward / Backward (relative to camera viewpoint)
+* **`Q` / `D`** – Strafe Left / Strafe Right
+* **`Mouse`** – 360° Camera Look (The cursor is automatically hidden and captured)
+* **`ESC`** – Release mouse control / Exit focus
 
-You will need a Python virtual environment and a C++ compiler supporting at least **C++17** or **C++20** (like MinGW/GCC through MSYS2 on Windows, or Clang on macOS).
+## Code Snippet Example
 
-```bash
-# Clone the repository
-git clone https://github.com
-cd YOUR_REPO_NAME
+In Python, capture the raw memory slice of the surface and send it into the compiled binary:
 
-# Activate your virtual environment (e.g., cocktail_venv)
-# install dependencies
-pip install pygame numpy pybind11 setuptools
-```
-
-### 🔨 Compiling the C++ Extension
-
-Because Windows system paths can be tricky with GCC, the repository uses a custom automated `setup.py` file to handle library paths, headers, and optimization flags.
-
-To compile the C++ extension module directly into your project workspace, run:
-
-```bash
-python setup.py build_ext --inplace
-```
-
-*This will generate a native binary (`raycasting.pyd` on Windows or `raycasting.so` on Linux/Mac) that Python can import directly.*
-
----
-
-## 🎮 How to Play
-
-Run the main game script using your environment's Python interpreter:
-
-```bash
-python main.py
-```
-
-* **`Z` / `S`** – Move Forward / Backward (relative to viewpoint)
-* **`Q` / `D`** – Strafe Left / Right
-* **`Mouse`** – 360° Look (Mouse is automatically locked to the center)
-* **`ESC`** – Release mouse control / Exit game window
-
----
-
-## ⚙️ How It Works (Code Insight)
-
-### Python Side (`main.py`)
 ```python
 import pygame
 import pygame.surfarray as surfarray
-import raycasting  # Your compiled C++ binary!
+import raycasting
 
-# Get raw 3D pixel arrays instantly without copying
+# Access the surface memory directly as a NumPy view
 pixel_values = surfarray.pixels3d(rendered_surface)
 
-# Execute native ray collisions 
+# Compute ray distances natively
 distances = raycasting.cast(
     fov, pixel_width, current_angle, wall_color, 
     current_cord, current_pixel, pixel_values
 )
 ```
 
-### C++ Side (`raycasting.cpp`)
+In C++, read the multi-dimensional buffer layout without type conversion delays:
+
 ```cpp
-// Receives the raw NumPy array memory chunk instantly
+// Accept the 3D NumPy array from Python
 py::array_t<uint8_t> pixel_values;
 
 // Unchecked data views allow raw pointer indexing inside the loop for maximum speed
@@ -96,8 +68,6 @@ auto grid = pixel_values.unchecked<3>();
 uint8_t r = grid(px, py, 0); 
 ```
 
----
+## License
 
-## 📜 License
-
-This project is open-source and available under the [MIT License](LICENSE).
+This project is licensed under the [MIT License](LICENSE).
