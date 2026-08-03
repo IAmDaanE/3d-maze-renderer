@@ -59,7 +59,8 @@ def distance_to_color(distance):
         return (0, 0, 0)
     else:
         distance_jump = 255 / (render_distance * pixel_width)
-        return (0, math.floor(distance_jump * ((render_distance * pixel_width) - distance)), 0)
+        value = math.floor(distance_jump * ((render_distance * pixel_width) - distance))
+        return (value, value, value)
     
 def get_dist_to_ceil(ray_length):
     wall_height = projection_constant / ray_length
@@ -135,7 +136,7 @@ while running:
     distances = raycasting.cast(fov, pixel_width, current_angle / 1, wall_color, (round(current_cord[0]), round(current_cord[1])), current_pixel, pixel_matrix)
 
     # displaying
-    screen.fill(floor_color)
+    screen.fill((255,255,255))
     if True:
         for i in range(800):
             ray_length = distances[i]
@@ -143,6 +144,7 @@ while running:
                 ray_length = 0.1
             color = distance_to_color(ray_length)
             dist_to_ceil = get_dist_to_ceil(ray_length)
+            pygame.draw.line(screen, (176, 132, 51), (i, (WINDOW_HEIGHT - 2 * dist_to_ceil) + dist_to_ceil), (i, WINDOW_HEIGHT))
             pygame.draw.line(screen, color, (i, dist_to_ceil), (i, 600 - dist_to_ceil))
     pygame.display.update()
     clock.tick(60)
