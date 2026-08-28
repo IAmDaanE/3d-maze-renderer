@@ -38,6 +38,7 @@ This method does limit to only looking horizontally and not vertically.
 
 ## Controls
 
+*These controls are WASD but for a belgian keyboard*
 * **`Z` / `S`** – Move Forward / Backward (relative to camera viewpoint)
 * **`Q` / `D`** – Strafe Left / Strafe Right
 * **`Mouse`** – 360° Camera Look (The cursor is automatically hidden and captured)
