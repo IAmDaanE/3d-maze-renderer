@@ -46,9 +46,9 @@ for row in range(rows):
     for column in range(columns):
         x,y = column * 20, row * 20
         if rendered_walls_left[row][column]:
-            pygame.draw.rect(rendered_surface, wall_color, (x,y,3,20))
+            pygame.draw.rect(rendered_surface, wall_color, (x,y,3,23))
         if rendered_walls_top[row][column]:
-            pygame.draw.rect(rendered_surface, wall_color, (x,y,20,3))
+            pygame.draw.rect(rendered_surface, wall_color, (x,y,23,3))
 pygame.draw.rect(rendered_surface, wall_color, (600, 0, 3, 600))
 pygame.draw.rect(rendered_surface, wall_color, (0, 600, 600, 3))
 
