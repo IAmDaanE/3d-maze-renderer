@@ -1,4 +1,4 @@
-pygame
+pygame-ce
 numpy
 pybind11
 setuptools
