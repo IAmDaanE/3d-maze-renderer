@@ -10,7 +10,7 @@ WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
 
 pygame.init()
-screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT), pygame.SCALED | pygame.RESIZABLE)
 rendered_surface = pygame.Surface((rendered_window_width, rendered_window_height))
 pygame.display.set_caption("3D maze")
 clock = pygame.time.Clock()
